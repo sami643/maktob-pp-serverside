@@ -5,7 +5,7 @@ const istehlaamSchema = new mongoose.Schema({
     required: true,
   },
 
-  Date: {
+  IstehlaamDate: {
     type: Date,
     required: true,
   },

@@ -8,23 +8,16 @@ const isthelaam = require("../models/istehlaam");
 exports.newIstehlaam = (req, res, next) => {
   console.log("newIstehlaam is called");
 
-  const { title, venue, date, time, organizers } = req.body;
+  const { istehlaamNo, istehlaamDate, recipent, subject, context, userId } =
+    req.body;
   const isthelaam = new isthelaam({
-    Title: title,
-    Vanue: venue,
-    Date: date,
-    Time: time,
-    Organizers: organizers,
+    IstehlaamNo: istehlaamNo,
+    IstehlaamDate: istehlaamDate,
+    Recipent: recipent,
+    Subject: subject,
+    Context: context,
+    UserID: userId,
   });
-  //   // SAVEING NEW CAMPS TO DATABASE
-  //   isthelaam
-  //     .save()
-  //     .then((result) => {
-  //       res.status(201).json({ message: "New camp created", isthelaam: result });
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
 };
 
 // Getting Istehlaam List
