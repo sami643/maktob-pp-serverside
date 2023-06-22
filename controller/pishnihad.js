@@ -2,51 +2,41 @@ const req = require("express/lib/request");
 const { send } = require("express/lib/response");
 const res = require("express/lib/response");
 // const jwt = require("jsonwebtoken");
-const pishnihad = require("../models/pishnihad");
+const pishnihads = require("../models/pishnihad");
 
 // CREATING NEW Istehlaam Documents
 exports.newPishnihad = (req, res, next) => {
   console.log("NewPishnihad is called");
+  const { pishnihadNo, pishnihadDate, recipent, subject, context, userId } =
+    req.body;
+  const pishnihad = new pishnihads({
+    PishnihadNo: pishnihadNo,
+    PishnihadDate: pishnihadDate,
+    Recipent: recipent,
+    Subject: subject,
+    Context: context,
+    UserID: userId,
+  });
 
-  // const { title, venue, date, time, organizers } = req.body;
-  // const isthelaam = new isthelaam({
-  //   Title: title,
-  //   Vanue: venue,
-  //   Date: date,
-  //   Time: time,
-  //   Organizers: organizers,
-  // });
-  //   // SAVEING NEW CAMPS TO DATABASE
-  //   isthelaam
-  //     .save()
-  //     .then((result) => {
-  //       res.status(201).json({ message: "New camp created", isthelaam: result });
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
+  pishnihad
+    .save()
+    .then((result) => {
+      res
+        .status(201)
+        .json({ message: "New pishnihad created", pishnihads: result });
+    })
+    .catch((err) => {
+      console.log(err, "Following Error Occured");
+    });
 };
 
 // Getting Istehlaam List
 exports.getPishnihadlist = (req, res, next) => {
   const { pishnihadNo } = req.body;
-  console.log("getIstehlaamsList called", pishnihadNo);
 
-  //
-  // const isthelaam = new isthelaam({
-  //   Title: title,
-  //   Vanue: venue,
-  //   Date: date,
-  //   Time: time,
-  //   Organizers: organizers,
-  // });
-  //   // SAVEING NEW CAMPS TO DATABASE
-  //   isthelaam
-  //     .save()
-  //     .then((result) => {
-  //       res.status(201).json({ message: "New camp created", isthelaam: result });
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
+  pishnihads.find().then((result) => {
+    res
+      .status(201)
+      .json({ message: "Data of the pishnihads", pishnihads: result });
+  });
 };

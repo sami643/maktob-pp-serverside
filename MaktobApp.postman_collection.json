@@ -1,0 +1,187 @@
+{
+	"info": {
+		"_postman_id": "ba0a877e-0035-45fc-b512-290faf53228c",
+		"name": "MaktobApp",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28065142"
+	},
+	"item": [
+		{
+			"name": "posting-istehlaam",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"istehlaamNo\": \"23423\",\r\n    \"istehlaamDate\": \"23423\",\r\n    \"recipent\": \"23423\",\r\n    \"subject\": \"23423\",\r\n    \"context\": \"23423\",\r\n    \"userId\": \"23423\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3006/api/istehlaam/new-istehlaam",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3006",
+					"path": [
+						"api",
+						"istehlaam",
+						"new-istehlaam"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getting-istehlaam-list",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\r\n{\r\n    \"istelaamNo\":\"1212\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3006/api/istehlaam/istehlaams",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3006",
+					"path": [
+						"api",
+						"istehlaam",
+						"istehlaams"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "posting-maktob",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"maktobNo\": \"900\",\r\n    \"maktobDate\": \"1444/12/12\",\r\n    \"recipent\": \"د مقام د دفتر ریاست\",\r\n    \"subject\": \"کمبته دبجیتل سازی\",\r\n    \"context\": \"اشتراک در جلسه کمیته\",\r\n    \"userId\": \"ُAhmad\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3006/api/maktob/new-maktob",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3006",
+					"path": [
+						"api",
+						"maktob",
+						"new-maktob"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getting-matkobs-list",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"maktobNo\":\"1212\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3006/api/maktob/maktobs",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3006",
+					"path": [
+						"api",
+						"maktob",
+						"maktobs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "posting-pishnihad",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"pishnihadNo\": \"900\",\r\n    \"pishnihadDate\": \"1444/12/12\",\r\n    \"recipent\": \"د مقام د دفتر ریاست\",\r\n    \"subject\": \"کمبته دبجیتل سازی\",\r\n    \"context\": \"اشتراک در جلسه کمیته\",\r\n    \"userId\": \"ُSami\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3006/api/pishnihad/new-pishnihad",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3006",
+					"path": [
+						"api",
+						"pishnihad",
+						"new-pishnihad"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getting-pishnihads-list",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3006/api/pishnihad/pishnihads",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3006",
+					"path": [
+						"api",
+						"pishnihad",
+						"pishnihads"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

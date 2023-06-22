@@ -5,8 +5,8 @@ const pishnihadSchema = new mongoose.Schema({
     required: true,
   },
 
-  Date: {
-    type: Date,
+  PishnihadDate: {
+    type: String,
     required: true,
   },
 

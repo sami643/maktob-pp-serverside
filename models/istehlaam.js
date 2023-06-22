@@ -6,7 +6,7 @@ const istehlaamSchema = new mongoose.Schema({
   },
 
   IstehlaamDate: {
-    type: Date,
+    type: String,
     required: true,
   },
 

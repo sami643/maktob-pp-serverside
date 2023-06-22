@@ -5,8 +5,8 @@ const maktobSchema = new mongoose.Schema({
     required: true,
   },
 
-  Date: {
-    type: Date,
+  MaktobDate: {
+    type: String,
     required: true,
   },
 
