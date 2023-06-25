@@ -7,31 +7,56 @@ const maktobs = require("../models/maktob");
 // CREATING NEW Istehlaam Documents
 exports.newMaktob = (req, res, next) => {
   console.log("New Maktob is called");
-  const { maktobNo, maktobDate, recipent, subject, context, userId } = req.body;
-  const maktob = new maktobs({
-    MaktobNo: maktobNo,
-    MaktobDate: maktobDate,
-    Recipent: recipent,
-    Subject: subject,
-    Context: context,
-    UserID: userId,
-  });
+  const { maktobNo, maktobDate, recipent, subject, context, userId } =
+    req.body.data;
+  console.log(req.body.data);
 
-  maktob
-    .save()
-    .then((result) => {
-      res.status(201).json({ message: "New Maktob created", Maktob: result });
+  maktobs
+    .exists({ UserID: userId, MaktobNo: maktobNo })
+    .then((existingMaktob) => {
+      if (existingMaktob) {
+        return res.status(400).json({
+          message: "د مکتوب نمبر تکراری دی/ شماره مکتبوب تکراری است",
+        });
+      } else {
+        const maktob = new maktobs({
+          MaktobNo: maktobNo,
+          MaktobDate: maktobDate,
+          Recipent: recipent,
+          Subject: subject,
+          Context: context,
+          UserID: userId,
+        });
+
+        console.log("MaktobNo", maktob.MaktobNo);
+
+        maktob
+          .save()
+          .then((result) => {
+            res
+              .status(201)
+              .json({
+                message: "نوی مکتبوب ثبت شو/ مکتوب جدید ثبت شو",
+                Maktob: result,
+              });
+          })
+          .catch((err) => {
+            console.log(err, "Following Error Occured", err);
+          });
+      }
     })
     .catch((err) => {
-      console.log(err, "Following Error Occured");
+      res.status(500).json({
+        message: "Istehlaam Post Error",
+        IstehlaamError: err,
+      });
     });
 };
 
 // Getting Istehlaam List
 exports.getmaktobLists = (req, res, next) => {
-  // const { maktobNo } = req.body;
-
-  maktobs.find().then((result) => {
-    res.status(201).json({ message: "Data of the Maktobs", Maktobs: result });
+  const { userId } = req.body.data;
+  maktobs.find({ UserID: userId }).then((result) => {
+    res.status(201).json({ Maktobs_List_data: result });
   });
 };

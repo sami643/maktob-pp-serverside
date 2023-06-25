@@ -4,6 +4,6 @@ const maktobController = require("../controller/maktob");
 const router = express.Router();
 
 router.post("/new-maktob", maktobController.newMaktob);
-router.get("/maktobs", maktobController.getmaktobLists);
+router.post("/maktobs", maktobController.getmaktobLists);
 
 module.exports = router;

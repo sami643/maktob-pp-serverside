@@ -6,39 +6,58 @@ const isthelaams = require("../models/istehlaam");
 
 // CREATING NEW Istehlaam Documents
 exports.newIstehlaam = (req, res, next) => {
-  console.log("newIstehlaam is called");
-
   const { istehlaamNo, istehlaamDate, recipent, subject, context, userId } =
-    req.body;
-  const isthelaam = new isthelaams({
-    IstehlaamNo: istehlaamNo,
-    IstehlaamDate: istehlaamDate,
-    Recipent: recipent,
-    Subject: subject,
-    Context: context,
-    UserID: userId,
-  });
-  console.log(istehlaamNo, "istehlaamNo");
+    req.body.data;
 
-  isthelaam
-    .save()
-    .then((result) => {
-      res
-        .status(201)
-        .json({ message: "New Istehlaam created", isthelaam: result });
+  console.log(req.body.data);
+  isthelaams
+    .exists({ UserID: userId, IstehlaamNo: istehlaamNo })
+    .then((existingIstehlaam) => {
+      if (existingIstehlaam) {
+        return res.status(400).json({
+          message: "د استعلام نمبر تکراری دی/ شماره استعلام تکراری است",
+        });
+      } else {
+        const isthelaam = new isthelaams({
+          IstehlaamNo: istehlaamNo,
+          IstehlaamDate: istehlaamDate,
+          Recipent: recipent,
+          Subject: subject,
+          Context: context,
+          UserID: userId,
+        });
+        console.log("Second Else");
+        isthelaam
+          .save()
+          .then((result) => {
+            console.log("inside Save");
+            res.status(201).json({
+              IstehlaamResponseFromBackend: result,
+            });
+          })
+          .catch((err) => {
+            res.status(500).json({
+              message: "Istehlaam Post Error",
+              IstehlaamError: err,
+            });
+          });
+      }
     })
     .catch((err) => {
-      console.log(err, "Following Error Occured");
+      res.status(500).json({
+        message: "Error finding Istehlaam",
+        Error: err,
+      });
     });
 };
 
 // Getting Istehlaam List
 exports.getIstehlaamsList = (req, res, next) => {
-  const { istelaamNo } = req.body;
-  console.log("getIstehlaamsList called", istelaamNo);
-  isthelaams.find().then((result) => {
+  const { userId } = req.body.data;
+  console.log("useIdsss", userId);
+  isthelaams.find({ UserID: userId }).then((result) => {
     res
       .status(201)
-      .json({ message: "Data of the Istehlaams", Istehlaams: result });
+      .json({ message: "Data of the Istehlaams", IstehlaamsList: result });
   });
 };
