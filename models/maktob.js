@@ -27,6 +27,10 @@ const maktobSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  PresidencyName: {
+    type: String,
+    required: true,
+  },
 });
 
 const maktob = new mongoose.model("maktob", maktobSchema);

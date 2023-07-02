@@ -27,6 +27,10 @@ const pishnihadSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  PresidencyName: {
+    type: String,
+    required: true,
+  },
 });
 
 const Pishnihad = new mongoose.model("pishnihad", pishnihadSchema);

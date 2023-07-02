@@ -7,8 +7,15 @@ const pishnihads = require("../models/pishnihad");
 
 // CREATING NEW Istehlaam Documents
 exports.newPishnihad = (req, res, next) => {
-  const { pishnihadNo, pishnihadDate, recipent, subject, context, userId } =
-    req.body.data;
+  const {
+    pishnihadNo,
+    pishnihadDate,
+    recipent,
+    subject,
+    context,
+    userId,
+    presidencyName,
+  } = req.body.data;
   console.log(req.body.data);
   pishnihads
     .exists({ UserID: userId, PishnihadNo: pishnihadNo })
@@ -25,6 +32,7 @@ exports.newPishnihad = (req, res, next) => {
           Subject: subject,
           Context: context,
           UserID: userId,
+          PresidencyName: presidencyName,
         });
         console.log("Second Else");
         pishnihad
@@ -52,13 +60,13 @@ exports.newPishnihad = (req, res, next) => {
 
 // Getting Istehlaam List
 exports.getPishnihadlist = (req, res, next) => {
-  const { userId } = req.body.data;
+  const { userId, presidencyName } = req.body.data;
 
-  console.log(userId, "userId");
-
-  pishnihads.find({ UserID: userId }).then((result) => {
-    res
-      .status(201)
-      .json({ message: "Data of the pishnihads", pishnihadsList: result });
-  });
+  pishnihads
+    .find({ UserID: userId, PresidencyName: presidencyName })
+    .then((result) => {
+      res
+        .status(201)
+        .json({ message: "Data of the pishnihads", pishnihadsList: result });
+    });
 };

@@ -33,6 +33,10 @@ const istehlaamSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  PresidencyName: {
+    type: String,
+    required: true,
+  },
 });
 const istehlaam = new mongoose.model("istehlaam", istehlaamSchema);
 module.exports = istehlaam;

@@ -6,8 +6,15 @@ const isthelaams = require("../models/istehlaam");
 
 // CREATING NEW Istehlaam Documents
 exports.newIstehlaam = (req, res, next) => {
-  const { istehlaamNo, istehlaamDate, recipent, subject, context, userId } =
-    req.body.data;
+  const {
+    istehlaamNo,
+    istehlaamDate,
+    recipent,
+    subject,
+    context,
+    userId,
+    presidencyName,
+  } = req.body.data;
 
   console.log(req.body.data);
   isthelaams
@@ -25,6 +32,7 @@ exports.newIstehlaam = (req, res, next) => {
           Subject: subject,
           Context: context,
           UserID: userId,
+          PresidencyName: presidencyName,
         });
         console.log("Second Else");
         isthelaam
@@ -53,11 +61,12 @@ exports.newIstehlaam = (req, res, next) => {
 
 // Getting Istehlaam List
 exports.getIstehlaamsList = (req, res, next) => {
-  const { userId } = req.body.data;
-  console.log("useIdsss", userId);
-  isthelaams.find({ UserID: userId }).then((result) => {
-    res
-      .status(201)
-      .json({ message: "Data of the Istehlaams", IstehlaamsList: result });
-  });
+  const { userId, presidencyName } = req.body.data;
+  isthelaams
+    .find({ UserID: userId, PresidencyName: presidencyName })
+    .then((result) => {
+      res
+        .status(201)
+        .json({ message: "Data of the Istehlaams", IstehlaamsList: result });
+    });
 };

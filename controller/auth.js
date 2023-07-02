@@ -5,8 +5,8 @@ const jwt = require("jsonwebtoken");
 const users = require("../models/auth");
 
 exports.login = async (req, res, next) => {
-  const { userId, password } = req.body;
-  console.log("User Is called", req.body.userId, req.body.password);
+  const { userId, password } = req.body.data;
+  console.log("User Is called", userId, password);
 
   const jwtkey = "thisisjwtkey";
 
@@ -15,7 +15,9 @@ exports.login = async (req, res, next) => {
 
   const user = await users.findOne({ UserID: userId });
   if (!user)
-    return res.status(401).json({ message: "غلط پسورډ یا ایمیل آدرس!" });
+    return res.status(401).json({
+      message: "ستاسو ایمیل آدرس یا پسورډ سم ندی/ایمیل آدرس یاپسورد اشتباه",
+    });
 
   if (user.Password === password) {
     const token = jwt.sign(
@@ -29,7 +31,9 @@ exports.login = async (req, res, next) => {
     console.log("Token: ", token);
     res.status(201).json({ message: "Success", token: token });
   } else {
-    res.status(401).json({ message: "ستاسو ایمیل ادریس/ پسورډ سم ندی" });
+    res.status(401).json({
+      message: "ستاسو ایمیل آدرس یا پسورډ سم ندی/ایمیل آدرس یاپسورد اشتباه",
+    });
   }
 };
 

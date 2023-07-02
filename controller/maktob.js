@@ -7,8 +7,15 @@ const maktobs = require("../models/maktob");
 // CREATING NEW Istehlaam Documents
 exports.newMaktob = (req, res, next) => {
   console.log("New Maktob is called");
-  const { maktobNo, maktobDate, recipent, subject, context, userId } =
-    req.body.data;
+  const {
+    maktobNo,
+    maktobDate,
+    recipent,
+    subject,
+    context,
+    userId,
+    presidencyName,
+  } = req.body.data;
   console.log(req.body.data);
 
   maktobs
@@ -26,19 +33,16 @@ exports.newMaktob = (req, res, next) => {
           Subject: subject,
           Context: context,
           UserID: userId,
+          PresidencyName: presidencyName,
         });
-
-        console.log("MaktobNo", maktob.MaktobNo);
 
         maktob
           .save()
           .then((result) => {
-            res
-              .status(201)
-              .json({
-                message: "نوی مکتبوب ثبت شو/ مکتوب جدید ثبت شو",
-                Maktob: result,
-              });
+            res.status(201).json({
+              message: "نوی مکتبوب ثبت شو/ مکتوب جدید ثبت شو",
+              Maktob: result,
+            });
           })
           .catch((err) => {
             console.log(err, "Following Error Occured", err);
@@ -55,8 +59,12 @@ exports.newMaktob = (req, res, next) => {
 
 // Getting Istehlaam List
 exports.getmaktobLists = (req, res, next) => {
-  const { userId } = req.body.data;
-  maktobs.find({ UserID: userId }).then((result) => {
-    res.status(201).json({ Maktobs_List_data: result });
-  });
+  const { userId, presidencyName } = req.body.data;
+  console.log(userId, presidencyName);
+  maktobs
+    .find({ UserID: userId, PresidencyName: presidencyName })
+    .then((result) => {
+      res.status(201).json({ Maktobs_List_data: result });
+      console.log(result, "thsisdfsd");
+    });
 };
