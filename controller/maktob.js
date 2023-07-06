@@ -15,6 +15,8 @@ exports.newMaktob = (req, res, next) => {
     context,
     userId,
     presidencyName,
+    maktobType,
+    copyTo,
   } = req.body.data;
   console.log(req.body.data);
 
@@ -34,6 +36,8 @@ exports.newMaktob = (req, res, next) => {
           Context: context,
           UserID: userId,
           PresidencyName: presidencyName,
+          MaktobType: maktobType,
+          CopyTo: copyTo,
         });
 
         maktob
@@ -65,6 +69,37 @@ exports.getmaktobLists = (req, res, next) => {
     .find({ UserID: userId, PresidencyName: presidencyName })
     .then((result) => {
       res.status(201).json({ Maktobs_List_data: result });
-      console.log(result, "thsisdfsd");
+    });
+};
+
+// Getting specific Maktob
+exports.getMaktobBaseOnId = (req, res) => {
+  const { maktobId } = req.body.data;
+  maktobs.findOne({ MaktobNo: maktobId }).then((result) => {
+    res
+      .status(201)
+      .json({ message: "Required Maktob: ", uniqueMaktob: result });
+  });
+};
+
+// Deleting a Maktob
+exports.deleteMaktob = (req, res, next) => {
+  const { maktobId } = req.body;
+
+  console.log(maktobId, "maktobb Idt");
+  maktobs
+    .findOne({ MaktobNo: maktobId })
+    .then((maktob) => {
+      if (!maktob) {
+        return err;
+      }
+
+      return maktob.deleteOne();
+    })
+    .then(() => {
+      res.status(201).json({ message: " maktob has been deleted" });
+    })
+    .catch((err) => {
+      console.log(err);
     });
 };
