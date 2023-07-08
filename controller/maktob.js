@@ -4,6 +4,9 @@ const res = require("express/lib/response");
 // const jwt = require("jsonwebtoken");
 const maktobs = require("../models/maktob");
 
+
+
+
 // CREATING NEW Istehlaam Documents
 exports.newMaktob = (req, res, next) => {
   console.log("New Maktob is called");
@@ -64,7 +67,7 @@ exports.newMaktob = (req, res, next) => {
 // Getting Istehlaam List
 exports.getmaktobLists = (req, res, next) => {
   const { userId, presidencyName } = req.body.data;
-  console.log(userId, presidencyName);
+  // console.log(userId, presidencyName);
   maktobs
     .find({ UserID: userId, PresidencyName: presidencyName })
     .then((result) => {
@@ -75,11 +78,20 @@ exports.getmaktobLists = (req, res, next) => {
 // Getting specific Maktob
 exports.getMaktobBaseOnId = (req, res) => {
   const { maktobId } = req.body.data;
-  maktobs.findOne({ MaktobNo: maktobId }).then((result) => {
-    res
-      .status(201)
-      .json({ message: "Required Maktob: ", uniqueMaktob: result });
-  });
+  console.log("MaktobId", maktobId);
+  if (maktobId.length < 12) {
+    maktobs.findOne({ MaktobNo: maktobId }).then((result) => {
+      res
+        .status(201)
+        .json({ message: "Required Maktob: ", uniqueMaktob: result });
+    });
+  } else {
+    maktobs.findOne({ _id: maktobId }).then((result) => {
+      res
+        .status(201)
+        .json({ message: "Required Maktob: ", uniqueMaktob: result });
+    });
+  }
 };
 
 // Deleting a Maktob
@@ -98,6 +110,38 @@ exports.deleteMaktob = (req, res, next) => {
     })
     .then(() => {
       res.status(201).json({ message: " maktob has been deleted" });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+// Updating the maktob
+exports.updateMakob = (req, res) => {
+  const {
+    makttobIdForUpdate,
+    maktobNo,
+    maktobDate,
+    maktobType,
+    recipent,
+    context,
+    copyTo,
+  } = req.body;
+
+  maktobs
+    .findOne({ MaktobNo: makttobIdForUpdate })
+    .then((maktob) => {
+      maktob.MaktobNo = camp_info;
+      maktob.MaktobDate = venue;
+      maktob.MaktobType = organizers;
+      maktob.Recipent = date;
+      maktob.Subject = time;
+      maktob.Context = organizers;
+      maktob.CopyTo = organizers;
+      return maktob.save();
+    })
+    .then((result) => {
+      res.status(201).json({ message: "Success", UpdatedMaktob: result });
     })
     .catch((err) => {
       console.log(err);

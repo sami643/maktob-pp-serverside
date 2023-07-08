@@ -1,7 +1,6 @@
 const req = require("express/lib/request");
 const { send } = require("express/lib/response");
 const res = require("express/lib/response");
-// const jwt = require("jsonwebtoken");
 const isthelaams = require("../models/istehlaam");
 
 // CREATING NEW Istehlaam Documents
@@ -69,4 +68,60 @@ exports.getIstehlaamsList = (req, res, next) => {
         .status(201)
         .json({ message: "Data of the Istehlaams", IstehlaamsList: result });
     });
+};
+
+// Deleting a Istehlaams
+exports.deleteIstehlaam = (req, res, next) => {
+  const { datafromFrontEnd } = req.body;
+
+  console.log(datafromFrontEnd);
+
+  istehlaams
+    .findOne({ IstehlaamNo: istehlaamId })
+    .then((istehlaam) => {
+      if (!istehlaam) {
+        return err;
+      }
+
+      return istehlaam.deleteOne();
+    })
+    .then(() => {
+      res.status(201).json({ message: " istehlaam has been deleted" });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+// Updating the Istehlaam
+exports.updateIstehlaam = (req, res) => {
+  const {
+    datafromFrontEnd,
+    maktobNo,
+    maktobDate,
+    maktobType,
+    recipent,
+    context,
+    copyTo,
+  } = req.body;
+  console.log(datafromFrontEnd);
+
+  // maktobs
+  //   .findOne({ MaktobNo: makttobIdForUpdate })
+  //   .then((maktob) => {
+  //     maktob.MaktobNo = camp_info;
+  //     maktob.MaktobDate = venue;
+  //     maktob.MaktobType = organizers;
+  //     maktob.Recipent = date;
+  //     maktob.Subject = time;
+  //     maktob.Context = organizers;
+  //     maktob.CopyTo = organizers;
+  //     return maktob.save();
+  //   })
+  //   .then((result) => {
+  //     res.status(201).json({ message: "Success", UpdatedMaktob: result });
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
 };

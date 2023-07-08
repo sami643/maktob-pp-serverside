@@ -4,5 +4,6 @@ const router = express.Router();
 
 router.post("/new-istehlaam", istehlaamController.newIstehlaam);
 router.post("/istehlaams", istehlaamController.getIstehlaamsList);
-
+router.delete("/delete", istehlaamController.deleteIstehlaam);
+router.put("/update", istehlaamController.updateIstehlaam);
 module.exports = router;

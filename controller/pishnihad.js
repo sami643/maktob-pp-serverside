@@ -1,11 +1,9 @@
 const req = require("express/lib/request");
 const { send } = require("express/lib/response");
 const res = require("express/lib/response");
-
-// const jwt = require("jsonwebtoken");
 const pishnihads = require("../models/pishnihad");
 
-// CREATING NEW Istehlaam Documents
+// CREATING NEW pishnihad Documents
 exports.newPishnihad = (req, res, next) => {
   const {
     pishnihadNo,
@@ -58,7 +56,7 @@ exports.newPishnihad = (req, res, next) => {
     });
 };
 
-// Getting Istehlaam List
+// Getting pishnihad List
 exports.getPishnihadlist = (req, res, next) => {
   const { userId, presidencyName } = req.body.data;
 
@@ -69,4 +67,59 @@ exports.getPishnihadlist = (req, res, next) => {
         .status(201)
         .json({ message: "Data of the pishnihads", pishnihadsList: result });
     });
+};
+
+// Deleting a Pishnihaad
+exports.deletePishnihad = (req, res, next) => {
+  const { datafromFrontEnd } = req.body;
+  console.log(datafromFrontEnd);
+  console.log(maktobId, "maktobb Idt");
+  pishnihads
+    .findOne({ IstehlaamNo: istehlaamId })
+    .then((pishnihad) => {
+      if (!pishnihad) {
+        return err;
+      }
+
+      return pishnihad.deleteOne();
+    })
+    .then(() => {
+      res.status(201).json({ message: " pishnihad has been deleted" });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+// Updating the Pishnihaad
+exports.updatePishnihaad = (req, res) => {
+  const {
+    datafromFrontEnd,
+    maktobNo,
+    maktobDate,
+    maktobType,
+    recipent,
+    context,
+    copyTo,
+  } = req.body;
+  console.log(datafromFrontEnd);
+
+  // maktobs
+  //   .findOne({ MaktobNo: makttobIdForUpdate })
+  //   .then((maktob) => {
+  //     maktob.MaktobNo = camp_info;
+  //     maktob.MaktobDate = venue;
+  //     maktob.MaktobType = organizers;
+  //     maktob.Recipent = date;
+  //     maktob.Subject = time;
+  //     maktob.Context = organizers;
+  //     maktob.CopyTo = organizers;
+  //     return maktob.save();
+  //   })
+  //   .then((result) => {
+  //     res.status(201).json({ message: "Success", UpdatedMaktob: result });
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
 };

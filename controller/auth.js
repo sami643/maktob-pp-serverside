@@ -4,6 +4,7 @@ const res = require("express/lib/response");
 const jwt = require("jsonwebtoken");
 const users = require("../models/auth");
 
+//  User Login
 exports.login = async (req, res, next) => {
   const { userId, password } = req.body.data;
   console.log("User Is called", userId, password);
