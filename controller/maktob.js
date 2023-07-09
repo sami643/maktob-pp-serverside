@@ -4,9 +4,6 @@ const res = require("express/lib/response");
 // const jwt = require("jsonwebtoken");
 const maktobs = require("../models/maktob");
 
-
-
-
 // CREATING NEW Istehlaam Documents
 exports.newMaktob = (req, res, next) => {
   console.log("New Maktob is called");
@@ -64,7 +61,7 @@ exports.newMaktob = (req, res, next) => {
     });
 };
 
-// Getting Istehlaam List
+// Getting Istehlaams List
 exports.getmaktobLists = (req, res, next) => {
   const { userId, presidencyName } = req.body.data;
   // console.log(userId, presidencyName);
@@ -122,28 +119,45 @@ exports.updateMakob = (req, res) => {
     makttobIdForUpdate,
     maktobNo,
     maktobDate,
-    maktobType,
     recipent,
+    subject,
     context,
-    copyTo,
-  } = req.body;
-
+    maktobType,
+    userId,
+  } = req.body.data;
   maktobs
-    .findOne({ MaktobNo: makttobIdForUpdate })
-    .then((maktob) => {
-      maktob.MaktobNo = camp_info;
-      maktob.MaktobDate = venue;
-      maktob.MaktobType = organizers;
-      maktob.Recipent = date;
-      maktob.Subject = time;
-      maktob.Context = organizers;
-      maktob.CopyTo = organizers;
-      return maktob.save();
+    .exists({
+      UserID: userId,
+      MaktobNo: maktobNo,
+      _id: { $ne: makttobIdForUpdate },
     })
-    .then((result) => {
-      res.status(201).json({ message: "Success", UpdatedMaktob: result });
-    })
-    .catch((err) => {
-      console.log(err);
+    .then((existingMaktob) => {
+      if (existingMaktob) {
+        return res.status(400).json({
+          message: "د مکتوب نمبر تکراری دی/ شماره مکتبوب تکراری است",
+        });
+      } else {
+        maktobs
+          .findOne({ _id: makttobIdForUpdate })
+          .then((maktob) => {
+            maktob.MaktobNo = maktobNo;
+            maktob.MaktobDate = maktobDate;
+            maktob.MaktobType = maktobType;
+            maktob.Recipent = recipent;
+            maktob.Subject = subject;
+            maktob.Context = context;
+            // maktob.CopyTo = organizers;
+            return maktob.save();
+          })
+          .then((result) => {
+            res.status(201).json({
+              message: "Maktob Successfully Updated",
+              UpdatedMaktob: result,
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
     });
 };

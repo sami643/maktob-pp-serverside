@@ -69,6 +69,27 @@ exports.getPishnihadlist = (req, res, next) => {
     });
 };
 
+// Getting specific Pishnihad
+exports.gettingSpecificPishnihad = (req, res) => {
+  const { pishnihadId } = req.body.data;
+  console.log(pishnihadId, "pishnihadId");
+  if (pishnihadId.length < 12) {
+    pishnihads.findOne({ PishnihadNo: pishnihadId }).then((result) => {
+      res.status(201).json({
+        message: "Required pishNihadForView: ",
+        uniquePishnihad: result,
+      });
+    });
+  } else {
+    pishnihads.findOne({ _id: pishnihadId }).then((result) => {
+      res.status(201).json({
+        message: "Required pishNihadForUpdate: ",
+        uniquePishnihad: result,
+      });
+    });
+  }
+};
+
 // Deleting a Pishnihaad
 exports.deletePishnihad = (req, res, next) => {
   const { datafromFrontEnd } = req.body;

@@ -3,6 +3,7 @@ const { send } = require("express/lib/response");
 const res = require("express/lib/response");
 const jwt = require("jsonwebtoken");
 const users = require("../models/auth");
+const expiresIn = "2m"; // Token will expire in 1 hour
 
 //  User Login
 exports.login = async (req, res, next) => {
@@ -33,7 +34,8 @@ exports.login = async (req, res, next) => {
         email: user.Email,
         higherAuthority: user.HigherAuthority,
       },
-      jwtkey
+      jwtkey,
+      { expiresIn }
     );
     console.log("Token: ", token);
     res.status(201).json({ message: "Success", token: token });
@@ -43,6 +45,7 @@ exports.login = async (req, res, next) => {
     });
   }
 };
+
 
 // Creating new user
 exports.signUp = (req, res, next) => {
