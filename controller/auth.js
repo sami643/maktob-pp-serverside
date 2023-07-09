@@ -54,6 +54,7 @@ exports.signUp = (req, res, next) => {
     director,
     phoneNo,
     higherAuthority,
+    email,
   } = req.body;
   console.log(req.body);
   users
@@ -74,6 +75,7 @@ exports.signUp = (req, res, next) => {
           Director: director,
           PhoneNo: phoneNo,
           HigherAuthority: higherAuthority,
+          Email: email,
         });
 
         user
