@@ -31,6 +31,13 @@ const maktobSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  MaktobType: {
+    type: String,
+    required: true,
+  },
+  CopyTo: {
+    type: Array,
+  },
 });
 
 const maktob = new mongoose.model("maktob", maktobSchema);
