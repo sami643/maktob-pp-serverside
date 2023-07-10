@@ -2,7 +2,6 @@ const req = require("express/lib/request");
 const { send } = require("express/lib/response");
 const res = require("express/lib/response");
 const istehlaams = require("../models/istehlaam");
-const Pishnihad = require("../models/pishnihad");
 
 // CREATING NEW Istehlaam Documents
 exports.newIstehlaam = (req, res, next) => {
@@ -16,7 +15,6 @@ exports.newIstehlaam = (req, res, next) => {
     presidencyName,
   } = req.body.data;
 
-  console.log(req.body.data);
   istehlaams
     .exists({ UserID: userId, IstehlaamNo: istehlaamNo })
     .then((existingIstehlaam) => {
@@ -34,11 +32,9 @@ exports.newIstehlaam = (req, res, next) => {
           UserID: userId,
           PresidencyName: presidencyName,
         });
-        console.log("Second Else");
         isthelaam
           .save()
           .then((result) => {
-            console.log("inside Save");
             res.status(201).json({
               IstehlaamResponseFromBackend: result,
             });
@@ -73,12 +69,10 @@ exports.getIstehlaamsList = (req, res, next) => {
 
 // Deleting a Istehlaams
 exports.deleteIstehlaam = (req, res, next) => {
-  const { datafromFrontEnd } = req.body;
-
-  console.log(datafromFrontEnd);
+  const { istehlaamId, userId } = req.body;
 
   istehlaams
-    .findOne({ IstehlaamNo: istehlaamId })
+    .findOne({ IstehlaamNo: istehlaamId, UserID: userId })
     .then((istehlaam) => {
       if (!istehlaam) {
         return err;

@@ -1,7 +1,6 @@
 const req = require("express/lib/request");
 const { send } = require("express/lib/response");
 const res = require("express/lib/response");
-// const jwt = require("jsonwebtoken");
 const maktobs = require("../models/maktob");
 
 // CREATING NEW Istehlaam Documents
@@ -18,7 +17,6 @@ exports.newMaktob = (req, res, next) => {
     maktobType,
     copyTo,
   } = req.body.data;
-  console.log(req.body.data);
 
   maktobs
     .exists({ UserID: userId, MaktobNo: maktobNo })
@@ -74,13 +72,14 @@ exports.getmaktobLists = (req, res, next) => {
 
 // Getting specific Maktob
 exports.getMaktobBaseOnId = (req, res) => {
-  const { maktobId } = req.body.data;
-  console.log("MaktobId", maktobId);
+  const { maktobId, userId } = req.body.data;
+
   if (maktobId.length < 12) {
-    maktobs.findOne({ MaktobNo: maktobId }).then((result) => {
+    maktobs.findOne({ MaktobNo: maktobId, UserID: userId }).then((result) => {
       res
         .status(201)
         .json({ message: "Required Maktob: ", uniqueMaktob: result });
+      console.log(result, "dsfsdf");
     });
   } else {
     maktobs.findOne({ _id: maktobId }).then((result) => {
@@ -125,6 +124,7 @@ exports.updateMakob = (req, res) => {
     maktobType,
     userId,
   } = req.body.data;
+  console.log("first update");
   maktobs
     .exists({
       UserID: userId,

@@ -37,6 +37,7 @@ exports.login = async (req, res, next) => {
       jwtkey,
       { expiresIn }
     );
+
     console.log("Token: ", token);
     res.status(201).json({ message: "Success", token: token });
   } else {

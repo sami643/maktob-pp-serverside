@@ -14,7 +14,6 @@ exports.newPishnihad = (req, res, next) => {
     userId,
     presidencyName,
   } = req.body.data;
-  console.log(req.body.data);
   pishnihads
     .exists({ UserID: userId, PishnihadNo: pishnihadNo })
     .then((existingPishnihad) => {
@@ -32,7 +31,6 @@ exports.newPishnihad = (req, res, next) => {
           UserID: userId,
           PresidencyName: presidencyName,
         });
-        console.log("Second Else");
         pishnihad
           .save()
           .then((result) => {
@@ -59,7 +57,6 @@ exports.newPishnihad = (req, res, next) => {
 // Getting pishnihad List
 exports.getPishnihadlist = (req, res, next) => {
   const { userId, presidencyName } = req.body.data;
-
   pishnihads
     .find({ UserID: userId, PresidencyName: presidencyName })
     .then((result) => {
@@ -72,7 +69,6 @@ exports.getPishnihadlist = (req, res, next) => {
 // Getting specific Pishnihad
 exports.gettingSpecificPishnihad = (req, res) => {
   const { pishnihadId } = req.body.data;
-  console.log(pishnihadId, "pishnihadId");
   if (pishnihadId.length < 12) {
     pishnihads.findOne({ PishnihadNo: pishnihadId }).then((result) => {
       res.status(201).json({
@@ -92,11 +88,9 @@ exports.gettingSpecificPishnihad = (req, res) => {
 
 // Deleting a Pishnihaad
 exports.deletePishnihad = (req, res, next) => {
-  const { datafromFrontEnd } = req.body;
-  console.log(datafromFrontEnd);
-  console.log(maktobId, "maktobb Idt");
+  const { pishnihadId, userId } = req.body;
   pishnihads
-    .findOne({ IstehlaamNo: istehlaamId })
+    .findOne({ PishnihadNo: pishnihadId, UserID: userId })
     .then((pishnihad) => {
       if (!pishnihad) {
         return err;
@@ -123,7 +117,6 @@ exports.updatePishnihaad = (req, res) => {
     context,
     copyTo,
   } = req.body;
-  console.log(datafromFrontEnd);
 
   // maktobs
   //   .findOne({ MaktobNo: makttobIdForUpdate })
