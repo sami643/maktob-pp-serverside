@@ -3,10 +3,10 @@ const { send } = require("express/lib/response");
 const res = require("express/lib/response");
 const maktobs = require("../models/maktob");
 
-// CREATING NEW Istehlaam Documents
+// CREATING new Maktob or Update Maktob
 exports.newMaktob = (req, res, next) => {
-  console.log("New Maktob is called");
   const {
+    maktobId,
     maktobNo,
     maktobDate,
     recipent,
@@ -17,46 +17,86 @@ exports.newMaktob = (req, res, next) => {
     maktobType,
     copyTo,
   } = req.body.data;
-
-  maktobs
-    .exists({ UserID: userId, MaktobNo: maktobNo })
-    .then((existingMaktob) => {
-      if (existingMaktob) {
-        return res.status(400).json({
-          message: "د مکتوب نمبر تکراری دی/ شماره مکتبوب تکراری است",
-        });
-      } else {
-        const maktob = new maktobs({
-          MaktobNo: maktobNo,
-          MaktobDate: maktobDate,
-          Recipent: recipent,
-          Subject: subject,
-          Context: context,
-          UserID: userId,
-          PresidencyName: presidencyName,
-          MaktobType: maktobType,
-          CopyTo: copyTo,
-        });
-
-        maktob
-          .save()
-          .then((result) => {
-            res.status(201).json({
-              message: "نوی مکتبوب ثبت شو/ مکتوب جدید ثبت شو",
-              Maktob: result,
-            });
-          })
-          .catch((err) => {
-            console.log(err, "Following Error Occured", err);
+  if (maktobId === "newMaktob" && maktobId.length < 15) {
+    console.log("New Maktob is called");
+    maktobs
+      .exists({ UserID: userId, MaktobNo: maktobNo })
+      .then((existingMaktob) => {
+        if (existingMaktob) {
+          return res.status(400).json({
+            message: "د مکتوب نمبر تکراری دی/ شماره مکتبوب تکراری است",
           });
-      }
-    })
-    .catch((err) => {
-      res.status(500).json({
-        message: "Istehlaam Post Error",
-        IstehlaamError: err,
+        } else {
+          const maktob = new maktobs({
+            MaktobNo: maktobNo,
+            MaktobDate: maktobDate,
+            Recipent: recipent,
+            Subject: subject,
+            Context: context,
+            UserID: userId,
+            PresidencyName: presidencyName,
+            MaktobType: maktobType,
+            CopyTo: copyTo,
+          });
+
+          maktob
+            .save()
+            .then((result) => {
+              res.status(201).json({
+                message: "نوی مکتبوب ثبت شو/ مکتوب جدید ثبت شو",
+                newlyAddedMaktob: result,
+              });
+            })
+            .catch((err) => {
+              console.log(err, "Following Error Occured", err);
+            });
+        }
+      })
+      .catch((err) => {
+        res.status(500).json({
+          message: "Istehlaam Post Error",
+          IstehlaamError: err,
+        });
       });
-    });
+  } else if (maktobId.length > 15) {
+    console.log("updating is on Fire ");
+    maktobs
+      .exists({
+        UserID: userId,
+        MaktobNo: maktobNo,
+        _id: { $ne: maktobId },
+      })
+      .then((existingMaktob) => {
+        if (existingMaktob) {
+          return res.status(400).json({
+            message: "د مکتوب نمبر تکراری دی/ شماره مکتبوب تکراری است",
+          });
+        } else {
+          maktobs
+            .findOne({ _id: maktobId })
+            .then((maktob) => {
+              maktob.MaktobNo = maktobNo;
+              maktob.MaktobDate = maktobDate;
+              maktob.MaktobType = maktobType;
+              maktob.Recipent = recipent;
+              maktob.Subject = subject;
+              maktob.Context = context;
+              // maktob.CopyTo = organizers;
+              return maktob.save();
+            })
+            .then((result) => {
+              res.status(201).json({
+                message:
+                  "مکتوب په بریالیتوب سره اپدیت شو/ مکتوب موفقانه اپدیت گردید",
+                UpdatedMaktob: result,
+              });
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+      });
+  }
 };
 
 // Getting Istehlaams List
@@ -74,14 +114,14 @@ exports.getmaktobLists = (req, res, next) => {
 exports.getMaktobBaseOnId = (req, res) => {
   const { maktobId, userId } = req.body.data;
 
-  if (maktobId.length < 12) {
+  if (maktobId && maktobId.length < 12) {
     maktobs.findOne({ MaktobNo: maktobId, UserID: userId }).then((result) => {
       res
         .status(201)
         .json({ message: "Required Maktob: ", uniqueMaktob: result });
       console.log(result, "dsfsdf");
     });
-  } else {
+  } else if (maktobId && maktobId.length > 12) {
     maktobs.findOne({ _id: maktobId }).then((result) => {
       res
         .status(201)
@@ -112,52 +152,52 @@ exports.deleteMaktob = (req, res, next) => {
     });
 };
 
-// Updating the maktob
-exports.updateMakob = (req, res) => {
-  const {
-    makttobIdForUpdate,
-    maktobNo,
-    maktobDate,
-    recipent,
-    subject,
-    context,
-    maktobType,
-    userId,
-  } = req.body.data;
-  console.log("first update");
-  maktobs
-    .exists({
-      UserID: userId,
-      MaktobNo: maktobNo,
-      _id: { $ne: makttobIdForUpdate },
-    })
-    .then((existingMaktob) => {
-      if (existingMaktob) {
-        return res.status(400).json({
-          message: "د مکتوب نمبر تکراری دی/ شماره مکتبوب تکراری است",
-        });
-      } else {
-        maktobs
-          .findOne({ _id: makttobIdForUpdate })
-          .then((maktob) => {
-            maktob.MaktobNo = maktobNo;
-            maktob.MaktobDate = maktobDate;
-            maktob.MaktobType = maktobType;
-            maktob.Recipent = recipent;
-            maktob.Subject = subject;
-            maktob.Context = context;
-            // maktob.CopyTo = organizers;
-            return maktob.save();
-          })
-          .then((result) => {
-            res.status(201).json({
-              message: "Maktob Successfully Updated",
-              UpdatedMaktob: result,
-            });
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
-    });
-};
+// // Updating the maktob
+// exports.updateMakob = (req, res) => {
+//   const {
+//     makttobIdForUpdate,
+//     maktobNo,
+//     maktobDate,
+//     recipent,
+//     subject,
+//     context,
+//     maktobType,
+//     userId,
+//   } = req.body.data;
+//   console.log("first update");
+//   maktobs
+//     .exists({
+//       UserID: userId,
+//       MaktobNo: maktobNo,
+//       _id: { $ne: makttobIdForUpdate },
+//     })
+//     .then((existingMaktob) => {
+//       if (existingMaktob) {
+//         return res.status(400).json({
+//           message: "د مکتوب نمبر تکراری دی/ شماره مکتبوب تکراری است",
+//         });
+//       } else {
+//         maktobs
+//           .findOne({ _id: makttobIdForUpdate })
+//           .then((maktob) => {
+//             maktob.MaktobNo = maktobNo;
+//             maktob.MaktobDate = maktobDate;
+//             maktob.MaktobType = maktobType;
+//             maktob.Recipent = recipent;
+//             maktob.Subject = subject;
+//             maktob.Context = context;
+//             // maktob.CopyTo = organizers;
+//             return maktob.save();
+//           })
+//           .then((result) => {
+//             res.status(201).json({
+//               message: "Maktob Successfully Updated",
+//               UpdatedMaktob: result,
+//             });
+//           })
+//           .catch((err) => {
+//             console.log(err);
+//           });
+//       }
+//     });
+// };

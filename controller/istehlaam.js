@@ -3,9 +3,10 @@ const { send } = require("express/lib/response");
 const res = require("express/lib/response");
 const istehlaams = require("../models/istehlaam");
 
-// CREATING NEW Istehlaam Documents
+// CREATING NEW Istehlaam And Updating
 exports.newIstehlaam = (req, res, next) => {
   const {
+    istehlaamId,
     istehlaamNo,
     istehlaamDate,
     recipent,
@@ -15,44 +16,84 @@ exports.newIstehlaam = (req, res, next) => {
     presidencyName,
   } = req.body.data;
 
-  istehlaams
-    .exists({ UserID: userId, IstehlaamNo: istehlaamNo })
-    .then((existingIstehlaam) => {
-      if (existingIstehlaam) {
-        return res.status(400).json({
-          message: "د استعلام نمبر تکراری دی/ شماره استعلام تکراری است",
-        });
-      } else {
-        const isthelaam = new istehlaams({
-          IstehlaamNo: istehlaamNo,
-          IstehlaamDate: istehlaamDate,
-          Recipent: recipent,
-          Subject: subject,
-          Context: context,
-          UserID: userId,
-          PresidencyName: presidencyName,
-        });
-        isthelaam
-          .save()
-          .then((result) => {
-            res.status(201).json({
-              IstehlaamResponseFromBackend: result,
-            });
-          })
-          .catch((err) => {
-            res.status(500).json({
-              message: "Istehlaam Post Error",
-              IstehlaamError: err,
-            });
+  if (istehlaamId === "newIstehlam" && istehlaamId.length < 15) {
+    console.log("New Istehlaam blocked Fired");
+    istehlaams
+      .exists({ UserID: userId, IstehlaamNo: istehlaamNo })
+      .then((existingIstehlaam) => {
+        if (existingIstehlaam) {
+          return res.status(400).json({
+            message: "د استعلام نمبر تکراری دی/ شماره استعلام تکراری است",
           });
-      }
-    })
-    .catch((err) => {
-      res.status(500).json({
-        message: "Error finding Istehlaam",
-        Error: err,
+        } else {
+          const istehlaam = new istehlaams({
+            IstehlaamNo: istehlaamNo,
+            IstehlaamDate: istehlaamDate,
+            Recipent: recipent,
+            Subject: subject,
+            Context: context,
+            UserID: userId,
+            PresidencyName: presidencyName,
+          });
+          istehlaam
+            .save()
+            .then((result) => {
+              res.status(201).json({
+                message: "نوی استعلام ثبت شو/ استعلام جدید ثبت شد",
+                IstehlaamResponseFromBackend: result,
+              });
+            })
+            .catch((err) => {
+              res.status(500).json({
+                message: "Istehlaam Post Error",
+                IstehlaamError: err,
+              });
+            });
+        }
+      })
+      .catch((err) => {
+        res.status(500).json({
+          message: "Error finding Istehlaam",
+          Error: err,
+        });
       });
-    });
+  } else if (istehlaamId.length > 15) {
+    console.log("istehlaam Updated Block Fired");
+    istehlaams
+      .exists({
+        UserID: userId,
+        IstehlaamNo: istehlaamNo,
+        _id: { $ne: istehlaamId },
+      })
+      .then((existingIstehlaam) => {
+        if (existingIstehlaam) {
+          return res.status(400).json({
+            message: "د استعلام نمبر تکراری دی/ شماره استعلام تکراری است",
+          });
+        } else {
+          istehlaams
+            .findOne({ _id: istehlaamId })
+            .then((istehlaam) => {
+              istehlaam.IstehlaamNo = istehlaamNo;
+              istehlaam.IstehlaamDate = istehlaamDate;
+              istehlaam.Recipent = recipent;
+              istehlaam.Subject = subject;
+              istehlaam.Context = context;
+              return istehlaam.save();
+            })
+            .then((result) => {
+              res.status(201).json({
+                message:
+                  "استعلام په بریالیتوب سره اپدیت شو/ استعلام موفقانه اپدیت گردید",
+                UpdatedPishnihad: result,
+              });
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+      });
+  }
 };
 
 // Getting Istehlaam List
@@ -91,11 +132,12 @@ exports.deleteIstehlaam = (req, res, next) => {
 // Getting specific Istehlaam
 exports.getIstehlaamBasedOnId = (req, res) => {
   const { istehlaamId } = req.body.data;
+
   if (istehlaamId.length < 12) {
     istehlaams.findOne({ IstehlaamNo: istehlaamId }).then((result) => {
       res.status(201).json({
         message: "Required IstehlaamForView: ",
-        uniqueIstehlaam: result,
+        UniqueIstehlaam: result,
       });
     });
   } else {
@@ -108,35 +150,35 @@ exports.getIstehlaamBasedOnId = (req, res) => {
   }
 };
 
-// Updating the Istehlaam
-exports.updateIstehlaam = (req, res) => {
-  const {
-    datafromFrontEnd,
-    maktobNo,
-    maktobDate,
-    maktobType,
-    recipent,
-    context,
-    copyTo,
-  } = req.body;
-  console.log(datafromFrontEnd);
+// // Updating the Istehlaam
+// exports.updateIstehlaam = (req, res) => {
+//   const {
+//     datafromFrontEnd,
+//     maktobNo,
+//     maktobDate,
+//     maktobType,
+//     recipent,
+//     context,
+//     copyTo,
+//   } = req.body;
+//   console.log(datafromFrontEnd);
 
-  // maktobs
-  //   .findOne({ MaktobNo: makttobIdForUpdate })
-  //   .then((maktob) => {
-  //     maktob.MaktobNo = camp_info;
-  //     maktob.MaktobDate = venue;
-  //     maktob.MaktobType = organizers;
-  //     maktob.Recipent = date;
-  //     maktob.Subject = time;
-  //     maktob.Context = organizers;
-  //     maktob.CopyTo = organizers;
-  //     return maktob.save();
-  //   })
-  //   .then((result) => {
-  //     res.status(201).json({ message: "Success", UpdatedMaktob: result });
-  //   })
-  //   .catch((err) => {
-  //     console.log(err);
-  //   });
-};
+//   // maktobs
+//   //   .findOne({ MaktobNo: makttobIdForUpdate })
+//   //   .then((maktob) => {
+//   //     maktob.MaktobNo = camp_info;
+//   //     maktob.MaktobDate = venue;
+//   //     maktob.MaktobType = organizers;
+//   //     maktob.Recipent = date;
+//   //     maktob.Subject = time;
+//   //     maktob.Context = organizers;
+//   //     maktob.CopyTo = organizers;
+//   //     return maktob.save();
+//   //   })
+//   //   .then((result) => {
+//   //     res.status(201).json({ message: "Success", UpdatedMaktob: result });
+//   //   })
+//   //   .catch((err) => {
+//   //     console.log(err);
+//   //   });
+// };
