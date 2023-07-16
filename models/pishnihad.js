@@ -31,6 +31,12 @@ const pishnihadSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  UserStatus: {
+    type: String,
+  },
+  PishnihadSent: {
+    type: Boolean,
+  },
 });
 
 const Pishnihad = new mongoose.model("pishnihad", pishnihadSchema);

@@ -38,6 +38,12 @@ const maktobSchema = new mongoose.Schema({
   CopyTo: {
     type: Array,
   },
+  UserStatus: {
+    type: String,
+  },
+  MaktobSent: {
+    type: Boolean,
+  },
 });
 
 const maktob = new mongoose.model("maktob", maktobSchema);

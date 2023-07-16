@@ -34,16 +34,16 @@ exports.newPishnihad = (req, res, next) => {
             Context: context,
             UserID: userId,
             PresidencyName: presidencyName,
+            UserStatus: "owner",
+            PishnihadSent: false,
           });
           pishnihad
             .save()
             .then((result) => {
-              res
-                .status(201)
-                .json({
-                  message: "نوی پیشنهاد ثبت شو/ پیشنهاد جدید ساخته شد",
-                  pishnihads: result,
-                });
+              res.status(201).json({
+                message: "نوی پیشنهاد ثبت شو/ پیشنهاد جدید ساخته شد",
+                pishnihads: result,
+              });
             })
             .catch((err) => {
               res.status(500).json({
@@ -100,13 +100,36 @@ exports.newPishnihad = (req, res, next) => {
 
 // Getting pishnihad List
 exports.getPishnihadlist = (req, res, next) => {
-  const { userId, presidencyName } = req.body.data;
+  const { userId, presidencyName, userStatus, pishnihadSent } = req.body.data;
   pishnihads
-    .find({ UserID: userId, PresidencyName: presidencyName })
+    .find({
+      UserID: userId,
+      PresidencyName: presidencyName,
+      UserStatus: userStatus,
+      PishnihadSent: pishnihadSent,
+    })
     .then((result) => {
       res
         .status(201)
         .json({ message: "Data of the pishnihads", pishnihadsList: result });
+    });
+};
+
+// Getting pishnihad No
+exports.getPishnihadNo = (req, res, next) => {
+  const { userId, presidencyName } = req.body.data;
+  pishnihads
+    .find({
+      UserID: userId,
+      PresidencyName: presidencyName,
+      UserStatus: "owner",
+      PishnihadSent: false,
+    })
+    .then((result) => {
+      res.status(201).json({
+        message: "Data of the pishnihads",
+        pishnihadNoPlusOne: result.length + 1,
+      });
     });
 };
 

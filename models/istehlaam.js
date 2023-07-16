@@ -37,6 +37,12 @@ const istehlaamSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  UserStatus: {
+    type: String,
+  },
+  IstehlaamSent: {
+    type: Boolean,
+  },
 });
 const istehlaam = new mongoose.model("istehlaam", istehlaamSchema);
 module.exports = istehlaam;

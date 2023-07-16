@@ -37,6 +37,8 @@ exports.newMaktob = (req, res, next) => {
             PresidencyName: presidencyName,
             MaktobType: maktobType,
             CopyTo: copyTo,
+            UserStatus: "owner",
+            MaktobSent: false,
           });
 
           maktob
@@ -101,12 +103,31 @@ exports.newMaktob = (req, res, next) => {
 
 // Getting Istehlaams List
 exports.getmaktobLists = (req, res, next) => {
-  const { userId, presidencyName } = req.body.data;
-  // console.log(userId, presidencyName);
+  const { userId, presidencyName, userStatus, maktobSent } = req.body.data;
   maktobs
-    .find({ UserID: userId, PresidencyName: presidencyName })
+    .find({
+      UserID: userId,
+      PresidencyName: presidencyName,
+      UserStatus: userStatus,
+      MaktobSent: maktobSent,
+    })
     .then((result) => {
       res.status(201).json({ Maktobs_List_data: result });
+    });
+};
+
+// Getting MaktobNo
+exports.getmaktobNo = (req, res, next) => {
+  const { userId, presidencyName } = req.body.data;
+  maktobs
+    .find({
+      UserID: userId,
+      PresidencyName: presidencyName,
+      UserStatus: "owner",
+      MaktobSent: false,
+    })
+    .then((result) => {
+      res.status(201).json({ MaktobNoPlusOne: result.length + 1 });
     });
 };
 
@@ -134,7 +155,6 @@ exports.getMaktobBaseOnId = (req, res) => {
 exports.deleteMaktob = (req, res, next) => {
   const { maktobId } = req.body;
 
-  console.log(maktobId, "maktobb Idt");
   maktobs
     .findOne({ MaktobNo: maktobId })
     .then((maktob) => {

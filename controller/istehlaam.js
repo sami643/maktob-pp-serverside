@@ -34,6 +34,8 @@ exports.newIstehlaam = (req, res, next) => {
             Context: context,
             UserID: userId,
             PresidencyName: presidencyName,
+            UserStatus: "owner",
+            IstehlaamSent: false,
           });
           istehlaam
             .save()
@@ -98,13 +100,36 @@ exports.newIstehlaam = (req, res, next) => {
 
 // Getting Istehlaam List
 exports.getIstehlaamsList = (req, res, next) => {
-  const { userId, presidencyName } = req.body.data;
+  const { userId, presidencyName, userStatus, istehlaamSent } = req.body.data;
   istehlaams
-    .find({ UserID: userId, PresidencyName: presidencyName })
+    .find({
+      UserID: userId,
+      PresidencyName: presidencyName,
+      UserStatus: userStatus,
+      IstehlaamSent: istehlaamSent,
+    })
     .then((result) => {
       res
         .status(201)
         .json({ message: "Data of the Istehlaams", IstehlaamsList: result });
+    });
+};
+
+// Getting Istehlaam No
+exports.getIstehlaamNo = (req, res, next) => {
+  const { userId, presidencyName } = req.body.data;
+  istehlaams
+    .find({
+      UserID: userId,
+      PresidencyName: presidencyName,
+      UserStatus: "owner",
+      IstehlaamSent: false,
+    })
+    .then((result) => {
+      res.status(201).json({
+        message: "Data of the Istehlaams",
+        IstehlaamsNoPlusOne: result.length + 1,
+      });
     });
 };
 
