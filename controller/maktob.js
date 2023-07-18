@@ -38,7 +38,6 @@ exports.newMaktob = (req, res, next) => {
             MaktobType: maktobType,
             CopyTo: copyTo,
             UserStatus: "owner",
-            MaktobSent: false,
           });
 
           maktob
@@ -103,16 +102,45 @@ exports.newMaktob = (req, res, next) => {
 
 // Getting Istehlaams List
 exports.getmaktobLists = (req, res, next) => {
-  const { userId, presidencyName, userStatus, maktobSent } = req.body.data;
+  const { userId, presidencyName, userStatus, maktobSent, allReceivers } =
+    req.body.data;
+  if (maktobSent === true)
+    maktobs
+      .find({
+        UserID: userId,
+        PresidencyName: presidencyName,
+        UserStatus: userStatus,
+        MaktobSent: maktobSent,
+      })
+      .then((result) => {
+        res.status(201).json({ Maktobs_List_data: result });
+      });
+  else
+    maktobs
+      .find({
+        UserID: userId,
+        PresidencyName: presidencyName,
+        UserStatus: userStatus,
+      })
+      .then((result) => {
+        res.status(201).json({ Maktobs_List_data: result });
+      });
+};
+
+//Retreiving the Received Maktobs List
+exports.getReceivedMaktobLists = (req, res, next) => {
+  const { allReceivers } = req.body.data;
+  let presidency;
+  if (allReceivers === "د بشری سرچینو  ریاست") presidency = "hr";
+  if (allReceivers === "د بشری سرچینو  ریاست") presidency = "hr";
   maktobs
     .find({
-      UserID: userId,
-      PresidencyName: presidencyName,
-      UserStatus: userStatus,
-      MaktobSent: maktobSent,
+      AllReceivers: {
+        $in: [presidency],
+      },
     })
-    .then((result) => {
-      res.status(201).json({ Maktobs_List_data: result });
+    .then((resul11t) => {
+      res.status(201).json({ Maktobs_List_data: resul11t });
     });
 };
 

@@ -101,18 +101,32 @@ exports.newPishnihad = (req, res, next) => {
 // Getting pishnihad List
 exports.getPishnihadlist = (req, res, next) => {
   const { userId, presidencyName, userStatus, pishnihadSent } = req.body.data;
-  pishnihads
-    .find({
-      UserID: userId,
-      PresidencyName: presidencyName,
-      UserStatus: userStatus,
-      PishnihadSent: pishnihadSent,
-    })
-    .then((result) => {
-      res
-        .status(201)
-        .json({ message: "Data of the pishnihads", pishnihadsList: result });
-    });
+  if (pishnihadSent === true)
+    pishnihads
+      .find({
+        UserID: userId,
+        PresidencyName: presidencyName,
+        UserStatus: userStatus,
+        PishnihadSent: pishnihadSent,
+      })
+      .then((result) => {
+        res
+          .status(201)
+          .json({ message: "Data of the pishnihads", pishnihadsList: result });
+      });
+  else
+    pishnihads
+      .find({
+        UserID: userId,
+        PresidencyName: presidencyName,
+        UserStatus: userStatus,
+      })
+      .then((result) => {
+        res.status(201).json({
+          message: "Data of the pishnihads",
+          pishnihadsList: result,
+        });
+      });
 };
 
 // Getting pishnihad No

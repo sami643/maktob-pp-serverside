@@ -101,18 +101,33 @@ exports.newIstehlaam = (req, res, next) => {
 // Getting Istehlaam List
 exports.getIstehlaamsList = (req, res, next) => {
   const { userId, presidencyName, userStatus, istehlaamSent } = req.body.data;
-  istehlaams
-    .find({
-      UserID: userId,
-      PresidencyName: presidencyName,
-      UserStatus: userStatus,
-      IstehlaamSent: istehlaamSent,
-    })
-    .then((result) => {
-      res
-        .status(201)
-        .json({ message: "Data of the Istehlaams", IstehlaamsList: result });
-    });
+
+  if (istehlaamSent === true)
+    istehlaams
+      .find({
+        UserID: userId,
+        PresidencyName: presidencyName,
+        UserStatus: userStatus,
+        IstehlaamSent: istehlaamSent,
+      })
+      .then((result) => {
+        res
+          .status(201)
+          .json({ message: "Data of the Istehlaams", IstehlaamsList: result });
+      });
+  else
+    istehlaams
+      .find({
+        UserID: userId,
+        PresidencyName: presidencyName,
+        UserStatus: userStatus,
+      })
+      .then((result) => {
+        res.status(201).json({
+          message: "Data of the Istehlaams",
+          IstehlaamsList: result,
+        });
+      });
 };
 
 // Getting Istehlaam No
