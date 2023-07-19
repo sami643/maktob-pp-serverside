@@ -41,6 +41,9 @@ const maktobSchema = new mongoose.Schema({
   UserStatus: {
     type: String,
   },
+  AttachedDocuments: {
+    type: Array,
+  },
   MaktobSent: {
     type: Boolean,
   },
