@@ -142,7 +142,7 @@ exports.getReceivedMaktobLists = (req, res, next) => {
   const { allReceivers } = req.body.data;
   let presidency;
   if (allReceivers === "ریاست محترم منابع بشری") presidency = "HRP";
-  if (allReceivers === "ریاست محترم پلان و هماهنگی ستراتیژیک ")
+  if (allReceivers === "ریاست محترم پلان و هماهنگی ستراتیژیک")
     presidency = "P&HSP";
   if (allReceivers === "ریاست محترم دفتر مقام") presidency = "DMP";
 
@@ -214,23 +214,97 @@ exports.getMaktobBaseOnId = (req, res) => {
 
 // Deleting a Maktob
 exports.deleteMaktob = (req, res, next) => {
-  const { maktobId } = req.body;
+  const { maktobId, senderPresidency, activeList, presidencyName } = req.body;
+  console.log(presidencyName, "presidencyName");
+  // if (activeList === "recievedMaktobs") {
+  //   let presidency;
+  //   if (presidencyName === "ریاست محترم منابع بشری") presidency = "HRP";
+  //   if (presidencyName === "ریاست محترم پلان و هماهنگی ستراتیژیک")
+  //     presidency = "P&HSP";
+  //   if (presidencyName === "ریاست محترم دفتر مقام") presidency = "DMP";
+
+  //   if (presidencyName === "ریاست محترم تفتیش داخلی") presidency = "TDP";
+  //   if (presidencyName === "آمریت سیستم های تکنالوژی معلوماتی و احصائیه")
+  //     presidency = "IT&MIS";
+  //   if (presidencyName === "معاونیت محترم امور مالی و اداری")
+  //     presidency = "F&AD";
+  //   if (presidencyName === "ریاست محترم مالی و حسابی") presidency = "F&AP";
+  //   if (presidencyName === "ریاست محترم خدمات و املاک") presidency = "A&KHP";
+  //   if (presidencyName === "ریاست محترم دعوت و ارشاد") presidency = "D&IP";
+  //   if (presidencyName === "آمریت محترم تدارکات") presidency = "TD";
+  //   if (presidencyName === "آمریت محترم ولایات") presidency = "PD";
+  //   if (presidencyName === "معاونیت محترم امور تخنیکی و مسلکی")
+  //     presidency = "T&PD";
+  //   if (presidencyName === "ریاست محترم امور تعلیمی و تحصیلی")
+  //     presidency = "T&TP";
+  //   if (presidencyName === "ریاست محترم امور متعلمین و محصلین")
+  //     presidency = "M&MP";
+  //   if (presidencyName === "ریاست محترم نصاب و تربیه معلم")
+  //     presidency = "N&TMP";
+  //   if (presidencyName === "ریاست محترم ارزیابی نظارت تعلیمی و تحصیلی")
+  //     presidency = "AT&TP";
+  //   if (presidencyName === "ریاست محترم تنظیم برنامه های حرفوی")
+  //     presidency = "BHP";
+  //   if (presidencyName === "ریاست محترم ترنم و فرهنگ") presidency = "T&FP";
+  //   if (presidencyName === "ریاست محترم تحقیق و تضمین کیفیت")
+  //     presidency = "T&TKP";
+  //   if (presidencyName === "مشاوریت محترم تخنیکی") presidency = "TA";
+  //   if (presidencyName === "مشاوریت محترم حقوقی") presidency = "HA";
+  //   maktobs
+  //     .findOne({ MaktobNo: maktobId, PresidencyName: senderPresidency })
+  //     .then((maktob) => {
+  //       if (maktob) {
+  //         maktob.AllReceivers = maktob.AllReceivers.filter(
+  //           (receiver) => receiver !== presidency
+  //         );
+  //         maktob
+  //           .save()
+  //           .then((updatedMaktob) => {
+  //             res.status(201).json({ message: " maktob has been deleted" });
+  //           })
+  //           .catch((error) => {
+  //             console.error("Error saving the modified document:", error);
+  //           });
+  //       }
+  //     });
+  // } else if (activeList === "sentMaktobs") {
+  //   maktobs
+  //     .findOne({ MaktobNo: maktobId, PresidencyName: presidencyName })
+  //     .then((maktob) => {
+  //       if (!maktob) {
+  //         return err;
+  //       }
+  //       maktob
+  //         .updateOne({ $unset: { MaktobSent: 1 } })
+  //         .then((updatedMaktob) => {
+  //           res.status(201).json({ message: " maktob has been deleted" });
+  //         })
+  //         .catch((error) => {
+  //           console.error("Error saving the modified document:", error);
+  //         })
+  //         .catch((error) => {
+  //           console.error("Error saving the modified document:", error);
+  //         });
+  //     });
+  // } else {
 
   maktobs
     .findOne({ MaktobNo: maktobId })
     .then((maktob) => {
-      if (!maktob) {
-        return err;
+      if (maktob.MaktobSent) {
+        res.status(400).json({
+          message: "Sent Maktob can not be deleted",
+        });
+      } else {
+        return maktob.deleteOne().then(() => {
+          res.status(201).json({ message: " maktob has delete" });
+        });
       }
-
-      return maktob.deleteOne();
-    })
-    .then(() => {
-      res.status(201).json({ message: " maktob has been deleted" });
     })
     .catch((err) => {
       console.log(err);
     });
+  // }
 };
 
 // Sending Maktobs
