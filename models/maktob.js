@@ -48,6 +48,7 @@ const maktobSchema = new mongoose.Schema({
     type: Boolean,
   },
   AllReceivers: { type: Array },
+  NewMaktob: { type: Boolean },
 });
 
 const maktob = new mongoose.model("maktob", maktobSchema);

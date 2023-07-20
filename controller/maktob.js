@@ -40,6 +40,7 @@ exports.newMaktob = (req, res, next) => {
             MaktobType: maktobType,
             CopyTo: copyTo,
             UserStatus: "owner",
+            NewMaktob: true,
           });
 
           maktob
@@ -104,8 +105,14 @@ exports.newMaktob = (req, res, next) => {
 
 // Getting Istehlaams List
 exports.getmaktobLists = (req, res, next) => {
-  const { userId, presidencyName, userStatus, maktobSent, allReceivers } =
-    req.body.data;
+  const {
+    userId,
+    presidencyName,
+    userStatus,
+    maktobSent,
+    newMaktob,
+    allReceivers,
+  } = req.body.data;
   if (maktobSent === true)
     maktobs
       .find({
@@ -123,6 +130,7 @@ exports.getmaktobLists = (req, res, next) => {
         UserID: userId,
         PresidencyName: presidencyName,
         UserStatus: userStatus,
+        NewMaktob: newMaktob,
       })
       .then((result) => {
         res.status(201).json({ Maktobs_List_data: result });
@@ -133,8 +141,32 @@ exports.getmaktobLists = (req, res, next) => {
 exports.getReceivedMaktobLists = (req, res, next) => {
   const { allReceivers } = req.body.data;
   let presidency;
-  if (allReceivers === "د بشری سرچینو  ریاست") presidency = "hr";
-  if (allReceivers === "د بشری سرچینو  ریاست") presidency = "hr";
+  if (allReceivers === "ریاست محترم منابع بشری") presidency = "HRP";
+  if (allReceivers === "ریاست محترم پلان و هماهنگی ستراتیژیک ")
+    presidency = "P&HSP";
+  if (allReceivers === "ریاست محترم دفتر مقام") presidency = "DMP";
+
+  if (allReceivers === "ریاست محترم تفتیش داخلی") presidency = "TDP";
+  if (allReceivers === "آمریت سیستم های تکنالوژی معلوماتی و احصائیه")
+    presidency = "IT&MIS";
+  if (allReceivers === "معاونیت محترم امور مالی و اداری") presidency = "F&AD";
+  if (allReceivers === "ریاست محترم مالی و حسابی") presidency = "F&AP";
+  if (allReceivers === "ریاست محترم خدمات و املاک") presidency = "A&KHP";
+  if (allReceivers === "ریاست محترم دعوت و ارشاد") presidency = "D&IP";
+  if (allReceivers === "آمریت محترم تدارکات") presidency = "TD";
+  if (allReceivers === "آمریت محترم ولایات") presidency = "PD";
+  if (allReceivers === "معاونیت محترم امور تخنیکی و مسلکی") presidency = "T&PD";
+  if (allReceivers === "ریاست محترم امور تعلیمی و تحصیلی") presidency = "T&TP";
+  if (allReceivers === "ریاست محترم امور متعلمین و محصلین") presidency = "M&MP";
+  if (allReceivers === "ریاست محترم نصاب و تربیه معلم") presidency = "N&TMP";
+  if (allReceivers === "ریاست محترم ارزیابی نظارت تعلیمی و تحصیلی")
+    presidency = "AT&TP";
+  if (allReceivers === "ریاست محترم تنظیم برنامه های حرفوی") presidency = "BHP";
+  if (allReceivers === "ریاست محترم ترنم و فرهنگ") presidency = "T&FP";
+  if (allReceivers === "ریاست محترم تحقیق و تضمین کیفیت") presidency = "T&TKP";
+  if (allReceivers === "مشاوریت محترم تخنیکی") presidency = "TA";
+  if (allReceivers === "مشاوریت محترم حقوقی") presidency = "HA";
+
   maktobs
     .find({
       AllReceivers: {
@@ -154,7 +186,7 @@ exports.getmaktobNo = (req, res, next) => {
       UserID: userId,
       PresidencyName: presidencyName,
       UserStatus: "owner",
-      MaktobSent: false,
+      NewMaktob: true,
     })
     .then((result) => {
       res.status(201).json({ MaktobNoPlusOne: result.length + 1 });
@@ -169,7 +201,7 @@ exports.getMaktobBaseOnId = (req, res) => {
     maktobs.findOne({ MaktobNo: maktobId, UserID: userId }).then((result) => {
       res
         .status(201)
-        .json({ message: "Required Maktob: ", uniqueMaktob: result });
+        .json({ message: "Required Maktob : ", uniqueMaktob: result });
     });
   } else if (maktobId && maktobId.length > 12) {
     maktobs.findOne({ _id: maktobId }).then((result) => {
@@ -225,6 +257,8 @@ exports.sendMaktob = (req, res) => {
         maktob.AllReceivers = allReceivers;
       }
       maktob.AttachedDocuments = attachedDocmuents;
+
+      maktob.MaktobSent = true;
 
       return maktob.save();
     })
