@@ -174,7 +174,9 @@ exports.getReceivedMaktobLists = (req, res, next) => {
       },
     })
     .then((resul11t) => {
-      res.status(201).json({ Maktobs_List_data: resul11t });
+      res
+        .status(201)
+        .json({ message: "ReceiveMaktob", Maktobs_List_data: resul11t });
     });
 };
 

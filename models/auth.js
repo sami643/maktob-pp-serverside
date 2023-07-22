@@ -41,6 +41,22 @@ const userSchema = new mongoose.Schema({
     type: String,
     // required: true,
   },
+  PositionTitle: {
+    type: String,
+    required: true,
+  },
+  PresidencyNamePashto: {
+    type: String,
+    required: true,
+  },
+  HigherAuthorityPashto: {
+    type: String,
+    required: true,
+  },
+  PositionTitlePashto: {
+    type: String,
+    required: true,
+  },
 });
 const user = new mongoose.model("user", userSchema);
 module.exports = user;
