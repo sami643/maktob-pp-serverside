@@ -199,6 +199,7 @@ exports.getmaktobNo = (req, res, next) => {
 exports.getMaktobBaseOnId = (req, res) => {
   const { maktobId, userId } = req.body.data;
 
+  console.log("MakobID", maktobId, "userId", userId);
   if (maktobId && maktobId.length < 12) {
     maktobs.findOne({ MaktobNo: maktobId, UserID: userId }).then((result) => {
       res
