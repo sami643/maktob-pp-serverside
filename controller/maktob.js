@@ -315,7 +315,7 @@ exports.sendMaktob = (req, res) => {
   console.log("send Maktob is Called:");
   const { maktobNo, presidencyName, userId, allReceivers, attachedDocmuents } =
     req.body.data;
-  console.log("details: ", attachedDocmuents);
+  console.log("details: ", req.body);
   maktobs
     .findOne({
       MaktobNo: maktobNo,
@@ -323,21 +323,22 @@ exports.sendMaktob = (req, res) => {
       UserID: userId,
     })
     .then((maktob) => {
-      if (maktob.AllReceivers) {
-        const existingReceiversSet = new Set(maktob.AllReceivers);
-        const newReceiversSet = new Set(allReceivers);
-        for (const receiver of newReceiversSet) {
-          existingReceiversSet.add(receiver);
+      if (maktob) {
+        if (maktob.AllReceivers) {
+          const existingReceiversSet = new Set(maktob.AllReceivers);
+          const newReceiversSet = new Set(allReceivers);
+          for (const receiver of newReceiversSet) {
+            existingReceiversSet.add(receiver);
+          }
+          maktob.AllReceivers = [...existingReceiversSet];
+        } else {
+          maktob.AllReceivers = allReceivers;
         }
-        maktob.AllReceivers = [...existingReceiversSet];
-      } else {
-        maktob.AllReceivers = allReceivers;
+        maktob.AttachedDocuments = attachedDocmuents;
+
+        maktob.MaktobSent = true;
+        return maktob.save();
       }
-      maktob.AttachedDocuments = attachedDocmuents;
-
-      maktob.MaktobSent = true;
-
-      return maktob.save();
     })
     .then((result) => {
       res

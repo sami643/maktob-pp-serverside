@@ -12,6 +12,7 @@ const maktobRoute = require("./routes/maktob");
 const istehlaamRoute = require("./routes/isthelaam");
 const pishnihadRoutes = require("./routes/pishnihad");
 const loginRoute = require("./routes/auth");
+const documentsJustificationRoute = require("./routes/document-justification");
 
 // istehlaam middleware
 app.use("/api/istehlaam", istehlaamRoute);
@@ -23,6 +24,7 @@ app.use("/api/maktob", maktobRoute);
 app.use("/api/pishnihad", pishnihadRoutes);
 
 app.use("/api/user", loginRoute);
+app.use("/api/justification", documentsJustificationRoute);
 
 const PORT = process.env.PORT || 3006;
 app.listen(PORT, console.log(`Server Started on port ${PORT}`));
