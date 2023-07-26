@@ -168,15 +168,12 @@ exports.getReceivedMaktobLists = (req, res, next) => {
   if (allReceivers === "مشاوریت محترم حقوقی") presidency = "HA";
 
   maktobs
-    .find({
-      AllReceivers: {
-        $in: [presidency],
-      },
-    })
-    .then((resul11t) => {
-      res
-        .status(201)
-        .json({ message: "ReceiveMaktob", Maktobs_List_data: resul11t });
+    .find({ AllReceivers: { $elemMatch: { Receiver: presidency } } })
+    .then((result) => {
+      res.status(201).json({
+        message: "ReceiveMaktob",
+        Maktobs_List_data: result,
+      });
     });
 };
 
@@ -315,7 +312,7 @@ exports.sendMaktob = (req, res) => {
   console.log("send Maktob is Called:");
   const { maktobNo, presidencyName, userId, allReceivers, attachedDocmuents } =
     req.body.data;
-  console.log("details: ", req.body);
+  console.log("sendMaktob is Called", allReceivers, presidencyName, maktobNo);
   maktobs
     .findOne({
       MaktobNo: maktobNo,
@@ -324,19 +321,24 @@ exports.sendMaktob = (req, res) => {
     })
     .then((maktob) => {
       if (maktob) {
+        console.log(
+          "iiner makreakdsgkasdgjksjdgjkldsajgkpo32i40-29304023840923840"
+        );
         if (maktob.AllReceivers) {
-          const existingReceiversSet = new Set(maktob.AllReceivers);
-          const newReceiversSet = new Set(allReceivers);
-          for (const receiver of newReceiversSet) {
-            existingReceiversSet.add(receiver);
+          const existingReceiversMap = new Map(
+            maktob.AllReceivers.map((item) => [item.Receiver, item])
+          );
+          for (const receiverObj of allReceivers) {
+            existingReceiversMap.set(receiverObj.Receiver, receiverObj);
           }
-          maktob.AllReceivers = [...existingReceiversSet];
+          maktob.AllReceivers = Array.from(existingReceiversMap.values());
         } else {
           maktob.AllReceivers = allReceivers;
         }
-        maktob.AttachedDocuments = attachedDocmuents;
 
+        maktob.AttachedDocuments = attachedDocmuents;
         maktob.MaktobSent = true;
+
         return maktob.save();
       }
     })
@@ -396,4 +398,48 @@ exports.fileUpload = (req, res, next) => {
       }
     }
   });
+};
+
+exports.getTotalUnseenDoc = (req, res, next) => {
+  const { unseenDoc } = req.body.data;
+
+  console.log("unseenDoc", req.body.data)
+  let presidency;
+  if (unseenDoc === "ریاست محترم منابع بشری") presidency = "HRP";
+  if (unseenDoc === "ریاست محترم پلان و هماهنگی ستراتیژیک")
+    presidency = "P&HSP";
+  if (unseenDoc === "ریاست محترم دفتر مقام") presidency = "DMP";
+
+  if (unseenDoc === "ریاست محترم تفتیش داخلی") presidency = "TDP";
+  if (unseenDoc === "آمریت سیستم های تکنالوژی معلوماتی و احصائیه")
+    presidency = "IT&MIS";
+  if (unseenDoc === "معاونیت محترم امور مالی و اداری") presidency = "F&AD";
+  if (unseenDoc === "ریاست محترم مالی و حسابی") presidency = "F&AP";
+  if (unseenDoc === "ریاست محترم خدمات و املاک") presidency = "A&KHP";
+  if (unseenDoc === "ریاست محترم دعوت و ارشاد") presidency = "D&IP";
+  if (unseenDoc === "آمریت محترم تدارکات") presidency = "TD";
+  if (unseenDoc === "آمریت محترم ولایات") presidency = "PD";
+  if (unseenDoc === "معاونیت محترم امور تخنیکی و مسلکی") presidency = "T&PD";
+  if (unseenDoc === "ریاست محترم امور تعلیمی و تحصیلی") presidency = "T&TP";
+  if (unseenDoc === "ریاست محترم امور متعلمین و محصلین") presidency = "M&MP";
+  if (unseenDoc === "ریاست محترم نصاب و تربیه معلم") presidency = "N&TMP";
+  if (unseenDoc === "ریاست محترم ارزیابی نظارت تعلیمی و تحصیلی")
+    presidency = "AT&TP";
+  if (unseenDoc === "ریاست محترم تنظیم برنامه های حرفوی") presidency = "BHP";
+  if (unseenDoc === "ریاست محترم ترنم و فرهنگ") presidency = "T&FP";
+  if (unseenDoc === "ریاست محترم تحقیق و تضمین کیفیت") presidency = "T&TKP";
+  if (unseenDoc === "مشاوریت محترم تخنیکی") presidency = "TA";
+  if (unseenDoc === "مشاوریت محترم حقوقی") presidency = "HA";
+
+  maktobs
+    .find({
+      AllReceivers: { $elemMatch: { Receiver: presidency, seen: false } },
+    })
+    .then((result) => {
+      res.status(201).json({
+        message: "ReceiveMaktob",
+        totalUnseenDoc: result.length,
+      });
+      console.log(result, "Unsseen Message");
+    });
 };
