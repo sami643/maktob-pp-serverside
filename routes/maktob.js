@@ -11,6 +11,7 @@ router.post("/maktob-no", maktobController.getmaktobNo);
 router.post("/send-matkob", maktobController.sendMaktob);
 router.post("/file-upload", maktobController.fileUpload);
 router.post("/unseen-doc", maktobController.getTotalUnseenDoc);
+router.post("/dec-unseen-doc", maktobController.deceaseUnseenDoc);
 router.delete("/delete", maktobController.deleteMaktob);
 // router.put("/update", maktobController.updateMakob);
 

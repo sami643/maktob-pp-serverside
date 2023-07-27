@@ -4,6 +4,7 @@ const res = require("express/lib/response");
 const maktobs = require("../models/maktob");
 const multer = require("multer");
 const path = require("path");
+const maktob = require("../models/maktob");
 
 // CREATING new Maktob or Update Maktob
 exports.newMaktob = (req, res, next) => {
@@ -20,7 +21,6 @@ exports.newMaktob = (req, res, next) => {
     copyTo,
   } = req.body.data;
   if (maktobId === "newMaktob" && maktobId.length < 15) {
-    console.log("New Maktob is called");
     maktobs
       .exists({ UserID: userId, MaktobNo: maktobNo })
       .then((existingMaktob) => {
@@ -63,7 +63,6 @@ exports.newMaktob = (req, res, next) => {
         });
       });
   } else if (maktobId.length > 15) {
-    console.log("updating is on Fire ");
     maktobs
       .exists({
         UserID: userId,
@@ -196,7 +195,6 @@ exports.getmaktobNo = (req, res, next) => {
 exports.getMaktobBaseOnId = (req, res) => {
   const { maktobId, userId } = req.body.data;
 
-  console.log("MakobID", maktobId, "userId", userId);
   if (maktobId && maktobId.length < 12) {
     maktobs.findOne({ MaktobNo: maktobId, UserID: userId }).then((result) => {
       res
@@ -215,7 +213,7 @@ exports.getMaktobBaseOnId = (req, res) => {
 // Deleting a Maktob
 exports.deleteMaktob = (req, res, next) => {
   const { maktobId, senderPresidency, activeList, presidencyName } = req.body;
-  console.log(presidencyName, "presidencyName");
+
   // if (activeList === "recievedMaktobs") {
   //   let presidency;
   //   if (presidencyName === "ریاست محترم منابع بشری") presidency = "HRP";
@@ -309,10 +307,8 @@ exports.deleteMaktob = (req, res, next) => {
 
 // Sending Maktobs
 exports.sendMaktob = (req, res) => {
-  console.log("send Maktob is Called:");
   const { maktobNo, presidencyName, userId, allReceivers, attachedDocmuents } =
     req.body.data;
-  console.log("sendMaktob is Called", allReceivers, presidencyName, maktobNo);
   maktobs
     .findOne({
       MaktobNo: maktobNo,
@@ -402,8 +398,8 @@ exports.fileUpload = (req, res, next) => {
 
 exports.getTotalUnseenDoc = (req, res, next) => {
   const { unseenDoc } = req.body.data;
+  console.log("getTotalUnseenDoc", unseenDoc);
 
-  console.log("unseenDoc", req.body.data)
   let presidency;
   if (unseenDoc === "ریاست محترم منابع بشری") presidency = "HRP";
   if (unseenDoc === "ریاست محترم پلان و هماهنگی ستراتیژیک")
@@ -440,6 +436,42 @@ exports.getTotalUnseenDoc = (req, res, next) => {
         message: "ReceiveMaktob",
         totalUnseenDoc: result.length,
       });
-      console.log(result, "Unsseen Message");
     });
+};
+
+exports.deceaseUnseenDoc = (req, res, next) => {
+  const { unseenDoc, id } = req.body.data;
+  maktobs.findOne({ _id: id }).then((targetMaktob) => {
+    let presidency;
+    if (unseenDoc === "ریاست محترم منابع بشری") presidency = "HRP";
+    if (unseenDoc === "ریاست محترم پلان و هماهنگی ستراتیژیک")
+      presidency = "P&HSP";
+    if (unseenDoc === "ریاست محترم دفتر مقام") presidency = "DMP";
+    if (unseenDoc === "ریاست محترم تفتیش داخلی") presidency = "TDP";
+    if (unseenDoc === "آمریت سیستم های تکنالوژی معلوماتی و احصائیه")
+      presidency = "IT&MIS";
+    if (unseenDoc === "معاونیت محترم امور مالی و اداری") presidency = "F&AD";
+    if (unseenDoc === "ریاست محترم مالی و حسابی") presidency = "F&AP";
+    if (unseenDoc === "ریاست محترم خدمات و املاک") presidency = "A&KHP";
+    if (unseenDoc === "ریاست محترم دعوت و ارشاد") presidency = "D&IP";
+    if (unseenDoc === "آمریت محترم تدارکات") presidency = "TD";
+    if (unseenDoc === "آمریت محترم ولایات") presidency = "PD";
+    if (unseenDoc === "معاونیت محترم امور تخنیکی و مسلکی") presidency = "T&PD";
+    if (unseenDoc === "ریاست محترم امور تعلیمی و تحصیلی") presidency = "T&TP";
+    if (unseenDoc === "ریاست محترم امور متعلمین و محصلین") presidency = "M&MP";
+    if (unseenDoc === "ریاست محترم نصاب و تربیه معلم") presidency = "N&TMP";
+    if (unseenDoc === "ریاست محترم ارزیابی نظارت تعلیمی و تحصیلی")
+      presidency = "AT&TP";
+    if (unseenDoc === "ریاست محترم تنظیم برنامه های حرفوی") presidency = "BHP";
+    if (unseenDoc === "ریاست محترم ترنم و فرهنگ") presidency = "T&FP";
+    if (unseenDoc === "ریاست محترم تحقیق و تضمین کیفیت") presidency = "T&TKP";
+    if (unseenDoc === "مشاوریت محترم تخنیکی") presidency = "TA";
+    if (unseenDoc === "مشاوریت محترم حقوقی") presidency = "HA";
+    for (let i = 0; i < 20; i++) {
+      if (targetMaktob.AllReceivers[i].Receiver === presidency) {
+        targetMaktob.AllReceivers[i] = { Receiver: presidency, seen: true };
+        return targetMaktob.save();
+      }
+    }
+  });
 };

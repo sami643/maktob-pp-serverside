@@ -54,7 +54,7 @@ exports.login = async (req, res, next) => {
 
 exports.gettigReceivedMaktobUserData = (req, res, next) => {
   const { userId } = req.body.data;
-  console.log("isClasaed", userId);
+
 
   users
     .findOne({ UserID: userId })
@@ -83,7 +83,7 @@ exports.signUp = (req, res, next) => {
     higherAuthority,
     email,
   } = req.body;
-  console.log(req.body);
+
   users
     .exists({ UserID: userId })
     .then((existingUser) => {
