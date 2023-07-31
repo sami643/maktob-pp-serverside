@@ -51,6 +51,7 @@ const maktobSchema = new mongoose.Schema({
     type: Array,
   },
   NewMaktob: { type: Boolean },
+  MaktobVaridaNo: { type: String },
 });
 
 const maktob = new mongoose.model("maktob", maktobSchema);
