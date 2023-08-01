@@ -24,20 +24,20 @@ exports.login = async (req, res, next) => {
   if (user.Password === password) {
     const token = jwt.sign(
       {
-        userIdCreatedByDB: user._Id,
-        userId: user.UserID,
-        presidencyName: user.PresidencyName,
-        phoneNo: user.PhoneNo,
-        presidentName: user.PresidentName,
-        presidencyNamePashto: user.PresidencyNamePashto,
-        directorate: user.Directorate,
-        director: user.Director,
-        email: user.Email,
-        higherAuthority: user.HigherAuthority,
-        higherAuthorityPashto: user.HigherAuthorityPashto,
-        positionTitle: user.PositionTitle,
-        positionTitlePashto: user.PositionTitlePashto,
-        positionTitlePashto: user.PositionTitlePashto,
+        UserIdCreatedByDB: user._Id,
+        UserId: user.UserID,
+        PresidencyName: user.PresidencyName,
+        PhoneNo: user.PhoneNo,
+        PresidentName: user.PresidentName,
+        PresidencyNamePashto: user.PresidencyNamePashto,
+        Directorate: user.Directorate,
+        Director: user.Director,
+        Email: user.Email,
+        HigherAuthority: user.HigherAuthority,
+        HigherAuthorityPashto: user.HigherAuthorityPashto,
+        PositionTitle: user.PositionTitle,
+        PositionTitlePashto: user.PositionTitlePashto,
+        PositionTitlePashto: user.PositionTitlePashto,
       },
       jwtkey,
       { expiresIn }
@@ -50,6 +50,24 @@ exports.login = async (req, res, next) => {
       message: "ستاسو ایمیل آدرس یا پسورډ سم ندی/ایمیل آدرس یاپسورد اشتباه",
     });
   }
+};
+
+exports.gettigReceivedMaktobUserData = (req, res, next) => {
+  const { userId } = req.body.data;
+
+
+  users
+    .findOne({ UserID: userId })
+    .then((user) => {
+      res.status(200).json({
+        message: "Success",
+        receviveMaktobUserData: user,
+      });
+      console.log(user);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 // Creating new user
@@ -65,7 +83,7 @@ exports.signUp = (req, res, next) => {
     higherAuthority,
     email,
   } = req.body;
-  console.log(req.body);
+
   users
     .exists({ UserID: userId })
     .then((existingUser) => {
