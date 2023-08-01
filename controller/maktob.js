@@ -5,6 +5,7 @@ const maktobs = require("../models/maktob");
 const multer = require("multer");
 const path = require("path");
 
+
 // CREATING new Maktob or Update Maktob
 exports.newMaktob = (req, res, next) => {
   const {
