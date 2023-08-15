@@ -10,24 +10,16 @@ const userSchema = new mongoose.Schema({
   },
   PresidencyName: {
     type: String,
-    required: true,
+    // required: true,
   },
   PresidentName: {
-    type: String,
-    // required: true,
-  },
-  Directorate: {
-    type: String,
-    // required: true,
-  },
-  Director: {
     type: String,
     // required: true,
   },
 
   PhoneNo: {
     type: String,
-    required: true,
+    // required: true,
   },
   HigherAuthority: {
     type: String,
@@ -43,17 +35,21 @@ const userSchema = new mongoose.Schema({
   },
   PositionTitle: {
     type: String,
-    required: true,
+    // required: true,
   },
   PresidencyNamePashto: {
     type: String,
-    required: true,
+    // required: true,
   },
   HigherAuthorityPashto: {
     type: String,
-    required: true,
+    // required: true,
   },
   PositionTitlePashto: {
+    type: String,
+    // required: true,
+  },
+  UserType: {
     type: String,
     required: true,
   },

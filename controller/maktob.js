@@ -6,7 +6,6 @@ const multer = require("multer");
 const path = require("path");
 const maktob = require("../models/maktob");
 
-
 // CREATING new Maktob or Update Maktob
 exports.newMaktob = (req, res, next) => {
   const {
@@ -19,6 +18,8 @@ exports.newMaktob = (req, res, next) => {
     userId,
     presidencyName,
     maktobType,
+    directoratePashto,
+    directorate,
     copyTo,
   } = req.body.data;
   if (maktobId === "newMaktob" && maktobId.length < 15) {
@@ -39,6 +40,8 @@ exports.newMaktob = (req, res, next) => {
             UserID: userId,
             PresidencyName: presidencyName,
             MaktobType: maktobType,
+            Directorate: directorate,
+            DirectoratePashto: directoratePashto,
             CopyTo: copyTo,
             UserStatus: "owner",
             NewMaktob: true,
@@ -59,7 +62,7 @@ exports.newMaktob = (req, res, next) => {
       })
       .catch((err) => {
         res.status(500).json({
-          message: "Istehlaam Post Error",
+          message: "Maktob Post Error",
           IstehlaamError: err,
         });
       });
@@ -103,7 +106,7 @@ exports.newMaktob = (req, res, next) => {
   }
 };
 
-// Getting Istehlaams List
+// Getting maktobs List
 exports.getmaktobLists = (req, res, next) => {
   const {
     userId,
@@ -117,7 +120,6 @@ exports.getmaktobLists = (req, res, next) => {
     maktobs
       .find({
         UserID: userId,
-        PresidencyName: presidencyName,
         UserStatus: userStatus,
         MaktobSent: maktobSent,
       })
@@ -128,7 +130,6 @@ exports.getmaktobLists = (req, res, next) => {
     maktobs
       .find({
         UserID: userId,
-        PresidencyName: presidencyName,
         UserStatus: userStatus,
         NewMaktob: newMaktob,
       })
@@ -179,11 +180,10 @@ exports.getReceivedMaktobLists = (req, res, next) => {
 
 // Getting MaktobNo
 exports.getmaktobNo = (req, res, next) => {
-  const { userId, presidencyName } = req.body.data;
+  const { userId } = req.body.data;
   maktobs
     .find({
       UserID: userId,
-      PresidencyName: presidencyName,
       UserStatus: "owner",
       NewMaktob: true,
     })

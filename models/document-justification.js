@@ -20,6 +20,14 @@ const documentsJustificationSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  Directorate: {
+    type: String,
+    required: true,
+  },
+  MolahizaDate: {
+    type: String,
+    required: true,
+  },
 });
 
 const documentsJustification = new mongoose.model(

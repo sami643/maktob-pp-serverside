@@ -27,6 +27,12 @@ const maktobSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  Directorate: {
+    type: String,
+  },
+  DirectoratePashto: {
+    type: String,
+  },
   PresidencyName: {
     type: String,
     required: true,

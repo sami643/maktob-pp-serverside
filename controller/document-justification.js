@@ -10,6 +10,8 @@ exports.maktobJustification = (req, res) => {
     molahizaContext,
     maktobSenderPresidency,
     maktobReceiverPresidency,
+    molahizaDate,
+    directorate,
   } = req.body.data;
   console.log(req.body.data);
   const document = new documentsJustification({
@@ -18,6 +20,8 @@ exports.maktobJustification = (req, res) => {
     MolahizaContext: molahizaContext,
     MaktobSenderPresidency: maktobSenderPresidency,
     MaktobReceiverPresidency: maktobReceiverPresidency,
+    MolahizaDate: molahizaDate,
+    Directorate: directorate,
   });
   document.save().then((result) => {
     res.status(201).json({
